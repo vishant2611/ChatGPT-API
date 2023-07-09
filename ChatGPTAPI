@@ -1,0 +1,43 @@
+import openai
+import os
+import pandas as pd
+import time
+
+openai.api_key = '<your secret key linked with your account>'
+
+def get_gpt_3(prompt, model="gpt-3.5-turbo"):
+    messages = [{"role": "user", "content": prompt}]
+    response = openai.ChatCompletion.create(
+        model=model, 
+        messages=messages,
+        temperature=0, # temperature can be 0 to 2, 1 is default, less temp , more deterministic
+        )
+    return response.choices[0].message["content"]
+
+def chat_bot_exit(model = "gpt-3.5-turbo"):
+    messages = [{"role":"system","content":"Hello How are you"}]
+    while True:
+        message = input("User (Press Enter Exit): ")
+        if not message:
+            print("Exiting the Program.")
+            break
+        else:
+            messages.append({"role":"user","content":message})
+            response = openai.ChatCompletion.create(
+                        model = model, 
+                        messages = messages,
+                        temperature=0,
+                        )
+            systemreply = response.choices[0].message.content
+            print (f"System Reply : {systemreply}")
+            messages.append({"role":"assistant","content":systemreply})
+
+prompt = input("Enter your Query\n")
+
+response = get_gpt_3(prompt)
+
+
+print(response)
+
+chat_bot_exit()
+
